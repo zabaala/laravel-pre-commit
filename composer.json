@@ -1,0 +1,23 @@
+{
+    "name": "zabaala/laravel-pre-commit",
+    "description": "A git pre-commit hook to Laravel apps.",
+    "type": "library",
+    "require": {
+        "php": ">=7.0.0",
+        "phpunit/phpunit": "~6.0",
+        "squizlabs/php_codesniffer": "^3.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mauricio Rodrigues",
+            "email": "mauricio.vsr@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Zabaala\\PreCommit\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
