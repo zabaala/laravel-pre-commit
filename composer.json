@@ -19,5 +19,12 @@
             "Zabaala\\PreCommit\\": "src/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Zabaala\\PreCommit\\PreCommitServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev"
 }
