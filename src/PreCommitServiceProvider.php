@@ -29,9 +29,11 @@ class PreCommitServiceProvider extends ServiceProvider
      */
     private function registerCommand()
     {
-        $this->app->singleton('command.git.pre-commit', function ($app) {
-            return new PreCommit();
-        });
+        $this->app->singleton(
+            'command.git.pre-commit', function ($app) {
+                return new PreCommit();
+            }
+        );
 
         $this->commands('command.git.pre-commit');
     }

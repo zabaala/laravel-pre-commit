@@ -46,7 +46,6 @@ class PreCommit extends Command
 
     /**
      * Execute the console command.
-     *
      */
     public function handle()
     {
@@ -139,9 +138,11 @@ class PreCommit extends Command
     {
         $process = new Process($command);
 
-        $process->run(function ($type, $line) {
-            $this->output->write($line);
-        });
+        $process->run(
+            function ($type, $line) {
+                $this->output->write($line);
+            }
+        );
 
         return $process;
     }

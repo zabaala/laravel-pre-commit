@@ -1,5 +1,5 @@
 {
-    "name": "zabaala/laravel-pre-commit",
+    "name": "zabaala/laravel_pre_commit",
     "description": "A git pre-commit hook to Laravel apps.",
     "type": "library",
     "require": {
