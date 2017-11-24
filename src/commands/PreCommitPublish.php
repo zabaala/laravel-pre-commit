@@ -5,145 +5,64 @@ namespace Zabaala\PreCommit\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
+use Zabaala\PreCommit\PreCommitException;
 
-class PreCommit extends Command
+class PreCommitPublish extends Command
 {
     /**
-     * Files to be analysed.
-     *
-     * @var array
+     * @const string
      */
-    private $files = [];
-
-    /**
-     * The exit code returned by the process.
-     *
-     * @var int
-     */
-    private $exitCode;
+    const TEMPLATE_PATH = 'pre-commit.example';
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'git:pre-commit';
+    protected $signature = 'pre-commit:publish';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Git pre-commit hook, with PHPCS, PHPCBF and PHPUNIT.';
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Create a .git/hook/pre-commit file';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->checkDependencies();
-
-        // extract PHP files...
-        $this->extractFilesToBeAnalysed();
-
-        // Run code sniffer...
-        $this->runCodeSniffer();
-
-        // Run Code Beautifier and Fixer...
-        $this->runPHPCBF();
-
-        // Run PHPUnit
-        $this->runPHPUnit();
-
-        if ($this->exitCode) {
-            $this->output->error('Something is wrong. Check Code Sniffer and PHPUnit log.');
-        } else {
-            $this->output->success('Yeah!! Everything is alright.');
-        }
-
-        exit($this->exitCode);
-    }
-
-    /**
-     * Check if dependencies exists.
-     */
-    private function checkDependencies()
-    {
-        $installedPackages = [];
-
-        exec("composer show -N", $installedPackages);
-        $installedPackages = collect($installedPackages);
-
-        $continue = $installedPackages->contains("phpunit/phpunit") &&
-                    $installedPackages->contains("squizlabs/php_codesniffer");
-
-        if (! $continue) {
-            $this->output->error('The packages PHPUnit and PHP_CodeSniffer wasn\'t found.');
-            exit(1);
-        }
+        $this->publish();
     }
 
     /**
      * Extract PHP files to be analysed from HEAD.
      */
-    private function extractFilesToBeAnalysed()
+    private function publish()
     {
-        exec("git diff --cached --name-only --diff-filter=ACMR HEAD | grep \\\\.php", $this->files);
+        $template = $this->getTemplatePath();
+
+        $destination = base_path('.git/hooks/pre-commit');
+
+        if (! is_dir(base_path('.git/hooks'))) {
+            throw new PreCommitException('.git/hooks directory not exists. Git repository is present?');
+        }
+
+        exec("mv -f $template $destination");
     }
 
     /**
-     * Run Code Sniffer to detect PSR2 code standard.
+     * @return string
      */
-    private function runCodeSniffer()
+    private function getTemplatePath()
     {
-        $process = $this->process(
-            "./vendor/bin/phpcs --standard=PSR2 --encoding=utf-8 -n -p " . implode(" ", $this->files)
-        );
-        $this->exitCode = $process->getExitCode();
-    }
-
-    /**
-     * Run Code Beautifier and Fixer.
-     */
-    private function runPHPCBF()
-    {
-        $process = $this->process(
-            "./vendor/bin/phpcbf --standard=PSR2 --encoding=utf-8 " . implode(" ", $this->files)
-        );
-        $this->exitCode = $process->getExitCode();
-    }
-
-    /**
-     * Run PHP Unit test.
-     */
-    private function runPHPUnit()
-    {
-        $process = $this->process("./vendor/bin/phpunit");
-        $this->exitCode = $process->getExitCode();
-    }
-
-    /**
-     * @param $command
-     * @return Process
-     */
-    private function process($command)
-    {
-        $process = new Process($command);
-
-        $process->run(
-            function ($type, $line) {
-                $this->output->write($line);
-            }
-        );
-
-        return $process;
+        return __DIR__
+            . DIRECTORY_SEPARATOR
+            . '..'
+            . DIRECTORY_SEPARATOR
+            . 'files' .
+            DIRECTORY_SEPARATOR
+            . 'pre-commit.example';
     }
 }

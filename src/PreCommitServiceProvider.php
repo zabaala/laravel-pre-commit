@@ -4,9 +4,20 @@ namespace Zabaala\PreCommit;
 
 use Illuminate\Support\ServiceProvider;
 use Zabaala\PreCommit\Commands\PreCommit;
+use Zabaala\PreCommit\Commands\PreCommitPublish;
 
 class PreCommitServiceProvider extends ServiceProvider
 {
+    /**
+     * @const string.
+     */
+    const COMMAND_PRE_COMMIT = 'command.git.pre-commit';
+
+    /**
+     * @const string.
+     */
+    const COMMAND_PUBLISH = 'command.git.pre-commit-publish';
+
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -21,21 +32,40 @@ class PreCommitServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerCommand();
+        $this->registerPreCommitCommand();
+
+        $this->registerPublishCommand();
     }
 
     /**
-     * Register the git:pre-commit command.
+     * Register pre-commit command.
      */
-    private function registerCommand()
+    private function registerPreCommitCommand()
     {
         $this->app->singleton(
-            'command.git.pre-commit',
+            self::COMMAND_PRE_COMMIT,
             function () {
                 return new PreCommit();
             }
         );
 
-        $this->commands('command.git.pre-commit');
+        $this->commands(self::COMMAND_PRE_COMMIT);
     }
+
+    /**
+     * Register publish command.
+     */
+    private function registerPublishCommand()
+    {
+        $this->app->singleton(
+            self::COMMAND_PUBLISH,
+            function () {
+                return new PreCommitPublish();
+            }
+        );
+
+        $this->commands(self::COMMAND_PUBLISH);
+    }
+
+
 }
