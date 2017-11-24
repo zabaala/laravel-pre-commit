@@ -31,7 +31,7 @@ class PreCommitServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'command.git.pre-commit',
-            function ($app) {
+            function () {
                 return new PreCommit();
             }
         );
