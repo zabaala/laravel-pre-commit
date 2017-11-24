@@ -10,11 +10,6 @@ use Zabaala\PreCommit\PreCommitException;
 class PreCommitPublish extends Command
 {
     /**
-     * @const string
-     */
-    const TEMPLATE_PATH = 'pre-commit.example';
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
