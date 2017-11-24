@@ -3,7 +3,6 @@
 namespace Zabaala\PreCommit\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
 
 class PreCommit extends Command
@@ -27,7 +26,7 @@ class PreCommit extends Command
      *
      * @var string
      */
-    protected $signature = 'git:pre-commit';
+    protected $signature = 'pre-commit';
 
     /**
      * The console command description.
