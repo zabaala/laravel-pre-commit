@@ -13,7 +13,7 @@ A Laravel package to analyze your PHP code and check your PHPUnit tests before c
 ### 1. Include package dependencie into composer.json:
 
 ```
-composer require zabaala/laravel-pre-commit
+composer require zabaala/laravel_precommit
 ```
 ### 2. Discover the package Service Provider
 
